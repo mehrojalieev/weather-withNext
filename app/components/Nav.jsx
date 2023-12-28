@@ -1,22 +1,23 @@
 "use client"
 import React from 'react'
-import getWeatherData from '../lib/getWeatherData'
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchWeatherData } from '../redux/api-slices/weather-slice';
 
 
 const Nav = () => {
     const [getCountry, setGetCountry] = useState("");
-    const dispatch = useDispatch()
-    
-  const handleGetWeatherData = async (e) => {
-    e.preventDefault()
-      const data = getCountry && await getWeatherData(getCountry);
-        console.log(data)
-        dispatch({type: "CURRENT_WEATHER", weather: data})
+     const dispatch = useDispatch();
+     const data = useSelector(state => state.weather)
+
+    const loadData = async (e) => {
+      e.preventDefault()
+      dispatch(fetchWeatherData(getCountry))
+      console.log(data);
     }
+
   return (
-    <form className='search-form' onSubmit={handleGetWeatherData} >
+    <form className='search-form' onSubmit={loadData}  >
     <input type="text" value={getCountry} placeholder="Search..." onChange={(e) => setGetCountry(e.target.value)} />
     <button type="submit">Search</button>
   </form>
